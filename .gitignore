@@ -1,0 +1,6 @@
+node_modules
+.env
+qr_code_backend/.env
+qr_code_frontend/.env
+.DS_Store
+.vscode
