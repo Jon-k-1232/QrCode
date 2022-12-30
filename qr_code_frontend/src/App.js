@@ -1,18 +1,17 @@
-import { Container, Button } from '@mui/material';
 import React, { useState } from 'react';
 import './App.css';
+import { Container, Button } from '@mui/material';
+import { createQrCode } from './ApiCalls/PostCalls';
 import Header from './Header/Header';
 import QrCodeImage from './QrCodeImage/QrCodeImage';
 import UserQrCodeImageSettings from './QrCodeImage/UserQrCodeImageSettings';
 import QrTypeSelections from './QrInformationFields/QrTypeSelections';
 import WebAddressFields from './QrInformationFields/WebAddressFields';
-import { createQrCode } from './ApiCalls/PostCalls';
 
 function App() {
   const [url, setUrl] = useState('');
   const [qr, setQr] = useState('');
   const [website, setWebsite] = useState('');
-  const [contactForms, setContactForms] = useState({});
   const [qrSettings, setQrSettings] = useState({
     backgroundColor: '#000000',
     foregroundColor: '#FFFFFF',
@@ -21,6 +20,7 @@ function App() {
     qrState: null,
     useCase: null
   });
+  // ToDo Static user id insert for development
   const [user, setUser] = useState({
     userId: 1,
     companyName: '',
@@ -32,8 +32,12 @@ function App() {
     isUserActive: true
   });
 
+  /**
+   * Call To create Qr code.
+   */
   const getQrCode = async () => {
     const qrState = qrSettings.qrState.value;
+
     if (qrState === 'dynamic') {
       const data = createDataObject();
       const qrCodeObject = await createQrCode(data);
@@ -51,11 +55,10 @@ function App() {
   const createDataObject = () => {
     const useCase = qrSettings.useCase.value;
     return {
-      website,
       ...user,
       ...qrSettings,
+      website,
       useCase
-      // ...contactForms
     };
   };
 
@@ -72,6 +75,7 @@ function App() {
       </Container>
       <Container>
         <WebAddressFields website={website} setWebsite={data => setWebsite(data)} />
+        {/* TODO Create contact component */}
       </Container>
       <Container style={{ margin: '10px' }}>
         <Button variant='contained' onClick={getQrCode}>

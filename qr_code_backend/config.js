@@ -2,6 +2,7 @@ module.exports = {
   PORT: 8000,
   NODE_ENV: process.env.NODE_ENV || 'development',
   DATABASE_HOST: 'localhost',
+  BACKEND_WEB_ADDRESS: 'www.archNemmy.com',
   DATABASE_USER: process.env.DATABASE_USER,
   DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
   DATABASE_URL: 'qr_test',

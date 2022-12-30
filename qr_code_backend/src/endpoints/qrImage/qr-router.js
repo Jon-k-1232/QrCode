@@ -3,125 +3,124 @@ const qrRouter = express.Router();
 const qrService = require('./qr-service');
 const jsonParser = express.json();
 const { sanitizeFields } = require('../../utils');
-// const { requireAuth } = require('../auth/jwt-auth');
 const dayjs = require('dayjs');
 const vCardsJS = require('vcards-js');
+const config = require('../../../config');
 
-qrRouter
-  .route('/qrInformation/:userId/:qrId')
-  // .all(requireAuth)
-  .get(async (req, res) => {
-    const db = req.app.get('db');
-    const userId = JSON.parse(req.params.userId);
-    const qrId = JSON.parse(req.params.qrId);
+qrRouter.route('/qrInformation/:userId/:qrId').get(async (req, res) => {
+  const db = req.app.get('db');
+  const userId = JSON.parse(req.params.userId);
+  const qrId = JSON.parse(req.params.qrId);
 
-    // Get Qr info
-    const qrImage = await qrService.getQr(db, userId, qrId);
-    const qrInfo = qrImage[0];
+  // Get Qr info
+  const qrImage = await qrService.getQr(db, userId, qrId);
+  const qrInfo = qrImage[0];
 
-    // Either redirect or create vCard depending on what the user selected the vCard use for, website, or contact card
-    if (qrInfo.useCase === 'website') {
-      res.status(301).redirect(`https://${qrInfo.website}`);
-    } else {
-      sendVCard(res, qrInfo);
-    }
-  });
+  // Either redirect or create vCard depending on what the user selected the vCard use for, website, or contact card
+  if (qrInfo.useCase === 'website') {
+    res.status(301).redirect(`https://${qrInfo.website}`);
+  } else {
+    sendVCard(res, qrInfo);
+  }
+});
 
-qrRouter
-  .route('/newQr')
-  // .all(requireAuth)
-  .post(jsonParser, async (req, res) => {
-    const db = req.app.get('db');
-    const bodyData = { ...req.body.data };
-    const sanitizedData = sanitizeFields(bodyData);
-    const userId = JSON.parse(sanitizedData.userId);
+qrRouter.route('/newQr').post(jsonParser, async (req, res) => {
+  const db = req.app.get('db');
+  const bodyData = { ...req.body.data };
+  const sanitizedData = sanitizeFields(bodyData);
+  const userId = JSON.parse(sanitizedData.userId);
 
-    const {
-      size,
-      border,
-      backgroundColor,
-      foregroundColor,
-      useCase,
-      companyName,
-      firstName,
-      lastName,
-      phone,
-      fax,
-      street,
-      city,
-      zip,
-      email,
-      website,
-      twitter,
-      facebook,
-      linkedIn,
-      instagram,
-      otherSocialMedia
-    } = sanitizedData;
+  // Destructure sanitized data
+  const {
+    size,
+    border,
+    backgroundColor,
+    foregroundColor,
+    useCase,
+    companyName,
+    firstName,
+    lastName,
+    phone,
+    fax,
+    street,
+    city,
+    zip,
+    email,
+    website,
+    twitter,
+    facebook,
+    linkedIn,
+    instagram,
+    otherSocialMedia
+  } = sanitizedData;
 
-    // Limits qr codes to 25 per account
-    // const numberOfAccountQrCodes = await qrService.getAccountQrCount(db, userId);
-    // if (numberOfAccountQrCodes.length >= 25) {
-    //   res.send({
-    //     message: 'Number of allowed QR codes exceeded',
-    //     status: 400
-    //   });
-    // }
-
-    const mostRecentQrCodeNumber = await qrService.getMostRecentQrCodeNumber(db);
-    const nextQrCodeNumber = mostRecentQrCodeNumber[0].max + 1;
-    const mostRecentQrCodeInformationNumber = await qrService.getMostRecentQrCodeInformationNumber(db);
-    const nextQrCodeInformationNumber = mostRecentQrCodeInformationNumber[0].max + 1;
-
-    const newQr = {
-      userId,
-      qrInformationId: nextQrCodeInformationNumber,
-      url: `www.archNemmy.com/qrInformation/${userId}/${nextQrCodeNumber}`,
-      size: Number(size),
-      border: Number(border),
-      backgroundColor: backgroundColor,
-      foregroundColor: foregroundColor,
-      creationDate: dayjs().format(),
-      isQrActive: true
-    };
-
-    const newQrInformation = {
-      qrId: nextQrCodeNumber,
-      userId,
-      numberOfTimesScanned: 0,
-      lastAccessed: dayjs().format(),
-      creationDate: dayjs().format(),
-      useCase: useCase,
-      companyName: companyName,
-      firstName: firstName,
-      lastName: lastName,
-      phone: phone,
-      fax: fax,
-      street: street,
-      city: city,
-      zip: zip,
-      email: email,
-      website: website,
-      twitter: twitter,
-      facebook: facebook,
-      linkedIn: linkedIn,
-      instagram: instagram,
-      otherSocialMedia: otherSocialMedia,
-      isQrInformationActive: true
-    };
-
-    const qrDB = await qrService.insertNewQrImage(db, newQr);
-    const qrInformationDB = await qrService.insertNewQrInformation(db, newQrInformation);
-    const qr = qrDB[0];
-    const qrInformation = qrInformationDB[0];
-
+  // Limits qr codes to 25 per account
+  const numberOfAccountQrCodes = await qrService.getAccountQrCount(db, userId);
+  if (numberOfAccountQrCodes.length >= 25) {
     res.send({
-      qr,
-      qrInformation,
-      message: 'Successful',
-      status: 200
+      message: 'Number of allowed QR codes exceeded',
+      status: 400
     });
+  }
+
+  // Gets db numbers for qr code and Qr information to line up
+  const mostRecentQrCodeNumber = await qrService.getMostRecentQrCodeNumber(db);
+  const nextQrCodeNumber = mostRecentQrCodeNumber[0].max + 1;
+  const mostRecentQrCodeInformationNumber = await qrService.getMostRecentQrCodeInformationNumber(db);
+  const nextQrCodeInformationNumber = mostRecentQrCodeInformationNumber[0].max + 1;
+
+  // Create Object to be insert into DB 'qrs'
+  const newQr = {
+    userId,
+    qrInformationId: nextQrCodeInformationNumber,
+    url: `${config.BACKEND_WEB_ADDRESS}/qrInformation/${userId}/${nextQrCodeNumber}`,
+    size: Number(size),
+    border: Number(border),
+    backgroundColor: backgroundColor,
+    foregroundColor: foregroundColor,
+    creationDate: dayjs().format(),
+    isQrActive: true
+  };
+
+  // Create Object to be insert into DB 'qrInformation'
+  const newQrInformation = {
+    qrId: nextQrCodeNumber,
+    userId,
+    numberOfTimesScanned: 0,
+    lastAccessed: dayjs().format(),
+    creationDate: dayjs().format(),
+    useCase: useCase,
+    companyName: companyName,
+    firstName: firstName,
+    lastName: lastName,
+    phone: phone,
+    fax: fax,
+    street: street,
+    city: city,
+    zip: zip,
+    email: email,
+    website: website,
+    twitter: twitter,
+    facebook: facebook,
+    linkedIn: linkedIn,
+    instagram: instagram,
+    otherSocialMedia: otherSocialMedia,
+    isQrInformationActive: true
+  };
+
+  // Insert data into DB
+  const qrDB = await qrService.insertNewQrImage(db, newQr);
+  const qrInformationDB = await qrService.insertNewQrInformation(db, newQrInformation);
+  const qr = qrDB[0];
+  const qrInformation = qrInformationDB[0];
+
+  res.send({
+    qr,
+    qrInformation,
+    message: 'Successful',
+    status: 200
   });
+});
 
 module.exports = qrRouter;
 
