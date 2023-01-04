@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Stack, TextField, Typography } from '@mui/material';
 import { Container } from '@mui/system';
 
 export default function UserQrCodeImageSettings({ qrSettings, setQrSettings }) {
   const { size, border, backgroundColor, foregroundColor } = qrSettings;
+
+  const initialState = {
+    ...qrSettings,
+    backgroundColor: '#000000',
+    foregroundColor: '#FFFFFF',
+    border: 0,
+    size: 250
+  };
+
+  useEffect(() => {
+    setQrSettings(initialState);
+  }, []);
+
   return (
     <Container style={{ display: 'flex' }}>
       <Stack>
@@ -11,7 +24,7 @@ export default function UserQrCodeImageSettings({ qrSettings, setQrSettings }) {
           label='Qr Size'
           type='number'
           variant='standard'
-          value={size}
+          value={size || ''}
           onChange={e => setQrSettings(otherSettings => ({ ...otherSettings, size: e.target.value }))}
           style={style.textBoxes}
         />
@@ -20,7 +33,7 @@ export default function UserQrCodeImageSettings({ qrSettings, setQrSettings }) {
           label='Qr Border Thickness'
           type='number'
           variant='standard'
-          value={border}
+          value={border || ''}
           onChange={e => setQrSettings(otherSettings => ({ ...otherSettings, border: e.target.value }))}
           style={style.textBoxes}
         />
@@ -30,7 +43,7 @@ export default function UserQrCodeImageSettings({ qrSettings, setQrSettings }) {
           <Typography style={style.text}>Background Color</Typography>
           <input
             type='color'
-            value={backgroundColor}
+            value={backgroundColor || ''}
             onChange={e => setQrSettings(otherSettings => ({ ...otherSettings, backgroundColor: e.target.value }))}
           />
         </Container>
@@ -39,7 +52,7 @@ export default function UserQrCodeImageSettings({ qrSettings, setQrSettings }) {
           <Typography style={{ color: '#666666', margin: '0 8px 0 0', padding: 0 }}>Foreground Color</Typography>
           <input
             type='color'
-            value={foregroundColor}
+            value={foregroundColor || ''}
             onChange={e => setQrSettings(otherSettings => ({ ...otherSettings, foregroundColor: e.target.value }))}
           />
         </Container>
