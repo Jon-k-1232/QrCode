@@ -42,8 +42,24 @@ const useTypes = [
     value: 'contactCard'
   },
   {
+    display: 'Call',
+    value: 'call'
+  },
+  {
     display: 'Website',
     value: 'website'
+  },
+  {
+    display: 'Wifi',
+    value: 'wifi'
+  },
+  {
+    display: 'Twitter',
+    value: 'twitter'
+  },
+  {
+    display: 'LinkedIn',
+    value: 'linkedIn'
   }
 ];
 

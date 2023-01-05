@@ -3,21 +3,24 @@ import { TextField } from '@mui/material';
 
 export default function ContactFields({ contactFields, setContactFields }) {
   const {
-    companyName,
     firstName,
     lastName,
-    phone,
-    fax,
+    companyName,
+    companyPosition,
     street,
     city,
+    state,
     zip,
-    email,
+    workPhone,
+    fax,
+    cellPhone,
+    homePhone,
+    personalEmail,
+    workEmail,
     website,
-    twitter,
-    facebook,
     linkedIn,
-    instagram,
-    otherSocialMedia
+    twitter,
+    facebook
   } = contactFields;
 
   useEffect(() => {
@@ -26,6 +29,7 @@ export default function ContactFields({ contactFields, setContactFields }) {
 
   return (
     <>
+      {/* TODO - UPDATE ALL CONTACT FIELDS */}
       <TextField
         label='Company Name'
         variant='standard'
@@ -136,21 +140,24 @@ export default function ContactFields({ contactFields, setContactFields }) {
 }
 
 const fields = {
-  companyName: '',
   firstName: '',
   lastName: '',
-  phone: '',
-  fax: '',
+  companyName: '',
+  companyPosition: '',
   street: '',
   city: '',
+  state: '',
   zip: '',
-  email: '',
+  workPhone: '',
+  fax: '',
+  cellPhone: '',
+  homePhone: '',
+  personalEmail: '',
+  workEmail: '',
   website: '',
-  twitter: '',
-  facebook: '',
   linkedIn: '',
-  instagram: '',
-  otherSocialMedia: ''
+  twitter: '',
+  facebook: ''
 };
 
 const style = {
