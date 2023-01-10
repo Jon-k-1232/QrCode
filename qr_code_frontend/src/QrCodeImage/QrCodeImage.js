@@ -3,6 +3,7 @@ import QRCode from 'qrcode';
 
 export default function QrCodeImage({ qr, setQr, url, qrSettings, showDownloadButton }) {
   const { size, border, foregroundColor, backgroundColor } = qrSettings;
+
   useEffect(() => {
     url && generateQRCode();
   });

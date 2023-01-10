@@ -10,7 +10,7 @@ export default function UserQrCodeImageSettings({ qrSettings, setQrSettings }) {
     backgroundColor: '#000000',
     foregroundColor: '#FFFFFF',
     border: 0,
-    size: 250
+    size: 300
   };
 
   useEffect(() => {
@@ -23,6 +23,7 @@ export default function UserQrCodeImageSettings({ qrSettings, setQrSettings }) {
         <TextField
           label='Qr Size'
           type='number'
+          inputProps={{ min: 160, max: 10000 }}
           variant='standard'
           value={size || ''}
           onChange={e => setQrSettings(otherSettings => ({ ...otherSettings, size: e.target.value }))}

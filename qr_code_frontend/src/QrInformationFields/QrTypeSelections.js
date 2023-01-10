@@ -25,12 +25,11 @@ export default function QrTypeSelections({ qrSettings, setQrSettings }) {
         renderInput={params => <TextField {...params} label='Website or Contact' variant='standard' />}
       />
       <Autocomplete
-        required
         options={qrOptions}
         getOptionLabel={option => option.display}
         value={qrState || null}
         onChange={(e, v) => setQrSettings(otherSettings => ({ ...otherSettings, qrState: v }))}
-        renderInput={params => <TextField {...params} label='Type of Qr' variant='standard' />}
+        renderInput={params => <TextField {...params} label='Type of Qr' variant='standard' required />}
       />
     </div>
   );

@@ -3,16 +3,15 @@ import { TextField } from '@mui/material';
 
 export default function ContactFields({ contactFields, setContactFields }) {
   const {
+    companyName,
     firstName,
     lastName,
-    companyName,
     companyPosition,
     street,
     city,
     state,
     zip,
     workPhone,
-    fax,
     cellPhone,
     homePhone,
     personalEmail,
@@ -20,7 +19,8 @@ export default function ContactFields({ contactFields, setContactFields }) {
     website,
     linkedIn,
     twitter,
-    facebook
+    facebook,
+    instagram
   } = contactFields;
 
   useEffect(() => {
@@ -29,7 +29,6 @@ export default function ContactFields({ contactFields, setContactFields }) {
 
   return (
     <>
-      {/* TODO - UPDATE ALL CONTACT FIELDS */}
       <TextField
         label='Company Name'
         variant='standard'
@@ -52,17 +51,31 @@ export default function ContactFields({ contactFields, setContactFields }) {
         style={style.textBoxes}
       />
       <TextField
-        label='Phone'
+        label='Company Role'
         variant='standard'
-        value={phone || ''}
-        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, phone: e.target.value }))}
+        value={companyPosition || ''}
+        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, companyPosition: e.target.value }))}
         style={style.textBoxes}
       />
       <TextField
-        label='Fax'
+        label='Cell Phone'
         variant='standard'
-        value={fax || ''}
-        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, fax: e.target.value }))}
+        value={cellPhone || ''}
+        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, cellPhone: e.target.value }))}
+        style={style.textBoxes}
+      />
+      <TextField
+        label='Home Phone'
+        variant='standard'
+        value={homePhone || ''}
+        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, homePhone: e.target.value }))}
+        style={style.textBoxes}
+      />
+      <TextField
+        label='WorkPhone'
+        variant='standard'
+        value={workPhone || ''}
+        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, workPhone: e.target.value }))}
         style={style.textBoxes}
       />
       <TextField
@@ -80,6 +93,13 @@ export default function ContactFields({ contactFields, setContactFields }) {
         style={style.textBoxes}
       />
       <TextField
+        label='State'
+        variant='standard'
+        value={state || ''}
+        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, state: e.target.value }))}
+        style={style.textBoxes}
+      />
+      <TextField
         label='Zip'
         variant='standard'
         value={zip || ''}
@@ -87,10 +107,17 @@ export default function ContactFields({ contactFields, setContactFields }) {
         style={style.textBoxes}
       />
       <TextField
-        label='Email'
+        label='Personal Email'
         variant='standard'
-        value={email || ''}
-        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, email: e.target.value }))}
+        value={personalEmail || ''}
+        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, personalEmail: e.target.value }))}
+        style={style.textBoxes}
+      />
+      <TextField
+        label='Work Email'
+        variant='standard'
+        value={workEmail || ''}
+        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, workEmail: e.target.value }))}
         style={style.textBoxes}
       />
       <TextField
@@ -101,38 +128,31 @@ export default function ContactFields({ contactFields, setContactFields }) {
         style={style.textBoxes}
       />
       <TextField
-        label='Twitter'
-        variant='standard'
-        value={twitter || ''}
-        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, twitter: e.target.value }))}
-        style={style.textBoxes}
-      />
-      <TextField
-        label='Facebook'
-        variant='standard'
-        value={facebook || ''}
-        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, facebook: e.target.value }))}
-        style={style.textBoxes}
-      />
-      <TextField
-        label='LinkedIn'
+        label='LinkedIn Profile Url'
         variant='standard'
         value={linkedIn || ''}
         onChange={e => setContactFields(otherSettings => ({ ...otherSettings, linkedIn: e.target.value }))}
         style={style.textBoxes}
       />
       <TextField
-        label='Instagram'
+        label='Twitter Profile Url'
         variant='standard'
-        value={instagram || ''}
-        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, instagram: e.target.value }))}
+        value={twitter || ''}
+        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, twitter: e.target.value }))}
         style={style.textBoxes}
       />
       <TextField
-        label='Other Social Media'
+        label='Facebook Profile Url'
         variant='standard'
-        value={otherSocialMedia || ''}
-        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, otherSocialMedia: e.target.value }))}
+        value={facebook || ''}
+        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, facebook: e.target.value }))}
+        style={style.textBoxes}
+      />
+      <TextField
+        label='Instagram Profile Url'
+        variant='standard'
+        value={instagram || ''}
+        onChange={e => setContactFields(otherSettings => ({ ...otherSettings, instagram: e.target.value }))}
         style={style.textBoxes}
       />
     </>
@@ -149,7 +169,6 @@ const fields = {
   state: '',
   zip: '',
   workPhone: '',
-  fax: '',
   cellPhone: '',
   homePhone: '',
   personalEmail: '',
@@ -157,7 +176,8 @@ const fields = {
   website: '',
   linkedIn: '',
   twitter: '',
-  facebook: ''
+  facebook: '',
+  instagram: ''
 };
 
 const style = {

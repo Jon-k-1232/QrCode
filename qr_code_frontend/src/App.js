@@ -6,8 +6,7 @@ import Header from './Header/Header';
 import QrCodeImage from './QrCodeImage/QrCodeImage';
 import UserQrCodeImageSettings from './QrCodeImage/UserQrCodeImageSettings';
 import QrTypeSelections from './QrInformationFields/QrTypeSelections';
-import WebAddressFields from './QrInformationFields/WebAddressFields';
-import ContactFields from './QrInformationFields/ContactFields';
+import UserQrFieldOrchestrator from './QrInformationFields/userQrFieldOrchestrator';
 
 function App() {
   const [url, setUrl] = useState('');
@@ -26,6 +25,8 @@ function App() {
     creationDate: '',
     isUserActive: true
   });
+
+  console.log(wifi);
 
   /**
    * Create qr string for static Qrs
@@ -48,7 +49,7 @@ function App() {
         setUrl(`http://${website}`);
         break;
       case 'wifi':
-        setUrl(`WIFI:T:${authentication};S:${name};${authentication !== 'nopass' ? `P:${password};` : ''}H:${hidden};`);
+        setUrl(`WIFI:T:${authentication};S:${name};${!password.length ? `P:${password}` : ''};H:${hidden};`);
         break;
       case 'twitter':
         setUrl(`http://twitter.com/${twitter}`);
@@ -81,7 +82,18 @@ function App() {
    * Call To create Qr code.
    */
   const getQrCode = async () => {
-    const qrState = qrSettings.qrState.value;
+    // If user forget to select dynamic or static, auto update to static.
+    if (!qrSettings.qrState) {
+      setQrSettings(otherSettings => ({
+        ...otherSettings,
+        qrState: {
+          display: 'Static',
+          value: 'static'
+        }
+      }));
+    }
+
+    const qrState = qrSettings.qrState ? qrSettings.qrState.value : 'static';
     const qrUse = qrSettings.useCase.value;
 
     if (qrState === 'dynamic') {
@@ -106,13 +118,12 @@ function App() {
         </Container>
       </Container>
       <Container>
-        {qrSettings.useCase && qrSettings.useCase.value === 'website' && (
-          <WebAddressFields website={website} setWebsite={data => setWebsite(data)} />
-        )}
-        {qrSettings.useCase && qrSettings.useCase.value === 'contactCard' && (
-          <ContactFields contactFields={contactFields} setContactFields={data => setContactFields(data)} />
-        )}
-        {/* TODO Create forms for Wifi */}
+        <UserQrFieldOrchestrator
+          stateFields={{ website, contactFields, qrSettings }}
+          setContactFields={data => setContactFields(data)}
+          setWebsite={data => setWebsite(data)}
+          setWifi={data => setWifi(data)}
+        />
       </Container>
       <Container style={{ margin: '10px' }}>
         <Button variant='contained' onClick={getQrCode}>
@@ -133,16 +144,15 @@ export default App;
  */
 const formVCard = contactFields => {
   const {
+    companyName,
     firstName,
     lastName,
-    companyName,
     companyPosition,
     street,
     city,
     state,
     zip,
     workPhone,
-    fax,
     cellPhone,
     homePhone,
     personalEmail,
@@ -150,25 +160,29 @@ const formVCard = contactFields => {
     website,
     linkedIn,
     twitter,
-    facebook
+    facebook,
+    instagram
   } = contactFields;
 
-  return `BEGIN:VCARD
-          VERSION:3.0
-          FN:${firstName}
-          LN:${lastName}
-          ORG:${companyName}
-          TITLE: ${companyPosition}
-          ADR:;;${street};${city};${state};${zip};
-          TEL;type=WORK;type=VOICE:${workPhone}
-          TEL;type=WORK;type=FAX:${fax}
-          TEL;type=CELL;type=VOICE:${cellPhone}
-          TEL;type=HOME;type=VOICE:${homePhone}
-          EMAIL;TYPE=home:${personalEmail}
-          EMAIL;TYPE=work:${workEmail}
-          URL:${website}
-          X-SOCIALPROFILE;type=linkedin:http://www.linkedin.com/in/${linkedIn}
-          X-SOCIALPROFILE;type=twitter;x-user=twitteruser:http://twitter.com/${twitter}
-          X-SOCIALPROFILE;type=facebook;x-user=facebookuser:http://www.facebook.com/${facebook}
-          END:VCARD`;
+  // Do not try to use spacing or re-format. Will break qr code.
+  const vCard = `BEGIN:VCARD
+VERSION:3.0
+N:${lastName};${firstName}
+FN:${firstName} ${lastName}
+ORG:${companyName}
+TITLE: ${companyPosition}
+ADR;TYPE=home:;;${street};${city};${state};${zip};USA
+TEL;type=WORK;type=VOICE:${workPhone}
+TEL;type=CELL;type=VOICE:${cellPhone}
+TEL;type=HOME;type=VOICE:${homePhone}
+EMAIL;TYPE=home:${personalEmail}
+EMAIL;TYPE=work:${workEmail}
+URL:${website}
+X-SOCIALPROFILE;type=linkedin:http://www.linkedin.com/in/${linkedIn}
+X-SOCIALPROFILE;type=twitter;http://twitter.com/${twitter}
+X-SOCIALPROFILE;type=facebook;http://www.facebook.com/${facebook}
+X-SOCIALPROFILE;type=instagram;http://www.instagram.com/${instagram}
+END:VCARD`;
+
+  return vCard;
 };
