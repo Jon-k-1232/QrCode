@@ -18,7 +18,7 @@ export default function WifiFields({ setWifi }) {
         getOptionLabel={option => option.display}
         value={authentication || null}
         onChange={(e, v) => {
-          setWifi(otherSettings => ({ ...otherSettings, authentication: v.value }));
+          setWifi(otherSettings => ({ ...otherSettings, authentication: v }));
           setWifiFields(otherSettings => ({ ...otherSettings, authentication: v }));
         }}
         renderInput={params => <TextField {...params} label='authentication' variant='standard' />}

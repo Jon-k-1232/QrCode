@@ -26,8 +26,6 @@ function App() {
     isUserActive: true
   });
 
-  console.log(wifi);
-
   /**
    * Create qr string for static Qrs
    * Different types of qr = https://blog.shahednasser.com/generate-10-qr-code-types-with-react/#wifi-qr-codes
@@ -49,7 +47,7 @@ function App() {
         setUrl(`http://${website}`);
         break;
       case 'wifi':
-        setUrl(`WIFI:T:${authentication};S:${name};${!password.length ? `P:${password}` : ''};H:${hidden};`);
+        setUrl(`WIFI:T:${authentication.value};S:${name};${!password.length ? `P:${password}` : ''};H:${hidden};`);
         break;
       case 'twitter':
         setUrl(`http://twitter.com/${twitter}`);
@@ -167,21 +165,21 @@ const formVCard = contactFields => {
   // Do not try to use spacing or re-format. Will break qr code.
   const vCard = `BEGIN:VCARD
 VERSION:3.0
-N:${lastName};${firstName}
-FN:${firstName} ${lastName}
-ORG:${companyName}
-TITLE: ${companyPosition}
-ADR;TYPE=home:;;${street};${city};${state};${zip};USA
-TEL;type=WORK;type=VOICE:${workPhone}
-TEL;type=CELL;type=VOICE:${cellPhone}
-TEL;type=HOME;type=VOICE:${homePhone}
-EMAIL;TYPE=home:${personalEmail}
-EMAIL;TYPE=work:${workEmail}
-URL:${website}
-X-SOCIALPROFILE;type=linkedin:http://www.linkedin.com/in/${linkedIn}
-X-SOCIALPROFILE;type=twitter;http://twitter.com/${twitter}
-X-SOCIALPROFILE;type=facebook;http://www.facebook.com/${facebook}
-X-SOCIALPROFILE;type=instagram;http://www.instagram.com/${instagram}
+${firstName && lastName && `N:${lastName};${firstName}`}
+${firstName && lastName && `FN:${firstName} ${lastName}`}
+${companyName && `ORG:${companyName}`}
+${companyPosition && `TITLE: ${companyPosition}`}
+${street && city && state && zip && `ADR;TYPE=home:;;${street};${city};${state};${zip};USA`}
+${workPhone && `TEL;type=WORK;type=VOICE:${workPhone}`}
+${cellPhone && `TEL;type=CELL;type=VOICE:${cellPhone}`}
+${homePhone && `TEL;type=HOME;type=VOICE:${homePhone}`}
+${personalEmail && `EMAIL;TYPE=home:${personalEmail}`}
+${workEmail && `EMAIL;TYPE=work:${workEmail}`}
+${website && `URL: ${website}`}
+${linkedIn && `X-SOCIALPROFILE;type=linkedin:http://www.linkedin.com/in/${linkedIn}`}
+${twitter && `X-SOCIALPROFILE;type=twitter;http://twitter.com/${twitter}`}
+${facebook && `X-SOCIALPROFILE;type=facebook;http://www.facebook.com/${facebook}`}
+${instagram && `X-SOCIALPROFILE;type=instagram;http://www.instagram.com/${instagram}`}
 END:VCARD`;
 
   return vCard;
