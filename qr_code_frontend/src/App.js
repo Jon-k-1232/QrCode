@@ -11,7 +11,7 @@ import UserQrFieldOrchestrator from './QrInformationFields/userQrFieldOrchestrat
 function App() {
   const [url, setUrl] = useState('');
   const [qr, setQr] = useState('');
-  const [website, setWebsite] = useState('');
+  const [singleText, setSingleText] = useState('');
   const [contactFields, setContactFields] = useState({});
   const [qrSettings, setQrSettings] = useState({});
   const [wifi, setWifi] = useState({});
@@ -34,26 +34,31 @@ function App() {
    */
   const setQrValue = qrUseCase => {
     const { authentication, name, password, hidden } = wifi;
-    const { linkedIn, twitter, cellPhone } = contactFields;
 
     switch (qrUseCase) {
       case 'contactCard':
         setUrl(formVCard(contactFields));
         break;
-      case 'call':
-        setUrl(`TEL:${cellPhone}`);
+      case 'phoneCall':
+        setUrl(`TEL:${singleText}`);
         break;
       case 'website':
-        setUrl(`http://${website}`);
+        setUrl(`http://${singleText}`);
         break;
       case 'wifi':
         setUrl(`WIFI:T:${authentication.value};S:${name};${!password.length ? `P:${password}` : ''};H:${hidden};`);
         break;
       case 'twitter':
-        setUrl(`http://twitter.com/${twitter}`);
+        setUrl(singleText);
+        break;
+      case 'facebook':
+        setUrl(singleText);
+        break;
+      case 'instagram':
+        setUrl(singleText);
         break;
       case 'linkedIn':
-        setUrl(`http://www.linkedin.com/in/${linkedIn}`);
+        setUrl(singleText);
         break;
       default:
         console.log('Error, No Use Case');
@@ -71,7 +76,7 @@ function App() {
       ...user,
       ...qrSettings,
       ...contactFields,
-      website,
+      singleText,
       useCase
     };
   };
@@ -117,9 +122,10 @@ function App() {
       </Container>
       <Container>
         <UserQrFieldOrchestrator
-          stateFields={{ website, contactFields, qrSettings }}
+          stateFields={{ qrSettings }}
           setContactFields={data => setContactFields(data)}
-          setWebsite={data => setWebsite(data)}
+          singleText={singleText}
+          setSingleText={data => setSingleText(data)}
           setWifi={data => setWifi(data)}
         />
       </Container>

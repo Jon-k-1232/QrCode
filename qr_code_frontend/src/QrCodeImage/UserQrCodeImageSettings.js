@@ -10,7 +10,7 @@ export default function UserQrCodeImageSettings({ qrSettings, setQrSettings }) {
     backgroundColor: '#000000',
     foregroundColor: '#FFFFFF',
     border: 0,
-    size: 300
+    size: 250
   };
 
   useEffect(() => {

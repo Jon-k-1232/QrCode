@@ -22,7 +22,7 @@ export default function QrTypeSelections({ qrSettings, setQrSettings }) {
         getOptionLabel={option => option.display}
         value={useCase || null}
         onChange={(e, v) => setQrSettings(otherSettings => ({ ...otherSettings, useCase: v }))}
-        renderInput={params => <TextField {...params} label='Website or Contact' variant='standard' />}
+        renderInput={params => <TextField {...params} label='Use Case' variant='standard' />}
       />
       <Autocomplete
         options={qrOptions}
@@ -41,8 +41,8 @@ const useTypes = [
     value: 'contactCard'
   },
   {
-    display: 'Call',
-    value: 'call'
+    display: 'Phone Call',
+    value: 'phoneCall'
   },
   {
     display: 'Website',
@@ -57,8 +57,16 @@ const useTypes = [
     value: 'twitter'
   },
   {
+    display: 'Facebook',
+    value: 'facebook'
+  },
+  {
     display: 'LinkedIn',
     value: 'linkedIn'
+  },
+  {
+    display: 'Instgram',
+    value: 'instagram'
   }
 ];
 
